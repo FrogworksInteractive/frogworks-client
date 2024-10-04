@@ -137,6 +137,71 @@ impl CommandHandler for GetUser {
     }
 }
 
+struct CreateApplication {}
+
+impl CommandHandler for CreateApplication {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameters.
+        let name: String = matches.get_one::<String>("name")
+            .unwrap()
+            .to_owned();
+        let package_name: String = matches.get_one::<String>("package-name")
+            .unwrap()
+            .to_owned();
+        let application_type: String = matches.get_one::<String>("application-type")
+            .unwrap()
+            .to_owned();
+        let description: String = matches.get_one::<String>("description")
+            .unwrap()
+            .to_owned();
+        let release_date: String = matches.get_one::<String>("release-date")
+            .unwrap()
+            .to_owned();
+        let early_access: bool = matches.get_one::<bool>("early-access")
+            .unwrap()
+            .to_owned();
+        let supported_platforms_string: String = matches.get_one::<String>("supported-platforms")
+            .unwrap()
+            .to_owned();
+        let genres_string: String = matches.get_one::<String>("genres")
+            .unwrap()
+            .to_owned();
+        let tags_string: String = matches.get_one::<String>("tags")
+            .unwrap()
+            .to_owned();
+        let base_price: f32 = matches.get_one::<f32>("base-price")
+            .unwrap()
+            .to_owned();
+        
+        // Parse each string list into a Vec<String>.
+        let supported_platforms: Vec<String> = supported_platforms_string.split(",")
+            .map(|s| s.to_owned())
+            .collect();
+        let genres: Vec<String> = genres_string.split(",")
+            .map(|s| s.to_owned())
+            .collect();
+        let tags: Vec<String> = tags_string.split(",")
+            .map(|s| s.to_owned())
+            .collect();
+        
+        // Attempt to create the application.
+        let response = api_service.create_application(
+            name,
+            package_name,
+            application_type,
+            description,
+            release_date,
+            early_access,
+            supported_platforms,
+            genres,
+            tags,
+            base_price
+        ).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct JsonResponse<T> {
     time: f64,
@@ -314,12 +379,82 @@ fn main() {
                             Arg::new("identifier")
                                 .long("identifier")
                                 .value_parser(value_parser!(String))
+                                .required(true)
                         )
                         .arg(
                             Arg::new("identifier-type")
                                 .long("identifier-type")
                                 .value_parser(value_parser!(String))
                                 .default_value("identifier")
+                        )
+                )
+        )
+        .subcommand(
+            Command::new("application")
+                .long_flag("application")
+                .subcommand_required(true)
+                .subcommand(
+                    Command::new("create")
+                        .long_flag("create")
+                        .arg(
+                            Arg::new("name")
+                                .long("name")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("package-name")
+                                .long("package-name")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("application-type")
+                                .long("application-type")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("description")
+                                .long("description")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("release-date")
+                                .long("release-date")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("early-access")
+                                .long("early-access")
+                                .value_parser(value_parser!(bool))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("supported-platforms")
+                                .long("supported-platforms")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("genres")
+                                .long("genres")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("tags")
+                                .long("tags")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("base-price")
+                                .long("base-price")
+                                .value_parser(value_parser!(f32))
+                                .required(true)
                         )
                 )
         );
@@ -382,9 +517,17 @@ fn main() {
             }
         },
         Some(("user", user_matches)) => {
-            match user_matches { 
+            match user_matches.subcommand() { 
                 Some(("get", get_matches)) => {
                     handle(|| GetUser::handle_command(api_service, get_matches));
+                },
+                _ => {}
+            }
+        },
+        Some(("application", application_matches)) => {
+            match application_matches.subcommand() {
+                Some(("create", create_matches)) => {
+                    handle(|| CreateApplication::handle_command(api_service, create_matches));
                 },
                 _ => {}
             }

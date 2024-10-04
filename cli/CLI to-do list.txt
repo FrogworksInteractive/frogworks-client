@@ -8,7 +8,7 @@ CLI commands to implement:
  - [X] Authenticate Session
  - [X] Delete Session
  - [X] Delete Specific Session
- - [ ] Create Application
+ - [X] Create Application
  - [ ] Get Application
  - [ ] Get Application Versions
  - [ ] Get Specific Application Version
