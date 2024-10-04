@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 
 use std::{env, process};
 use std::borrow::Cow;
@@ -13,6 +13,7 @@ use tray_item::{IconSource, TrayItem};
 
 const DAEMON_IP: &str = "127.0.0.1";
 const DAEMON_PORT: u16 = 57222;
+const HEARTBEAT_PORT: u16 = 57223;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Message {
@@ -118,6 +119,39 @@ async fn send_to_running_instance(message: Value) -> tokio::io::Result<()> {
     stream.write_all(message.to_string().as_bytes()).await?;
 
     Ok(())
+}
+
+async fn start_heartbeat_server() {
+    let listener: TcpListener =
+        TcpListener::bind(format!("{}:{}", DAEMON_IP, HEARTBEAT_PORT)).await.unwrap();
+
+    loop {
+        match listener.accept().await {
+            Ok((stream, _)) => {
+                tokio::spawn(async move {
+                    handle_heartbeat_client(stream).await;
+                });
+            },
+            Err(e) => eprintln!("Failed to accept heartbeat TCP connection: {}", e)
+        }
+    }
+}
+
+async fn handle_heartbeat_client(mut stream: TcpStream) {
+    let mut buffer: Vec<u8> = vec![0; 1024];
+    let n: usize = stream.read(&mut buffer).await.unwrap();
+    let buffer: Cow<str> = String::from_utf8_lossy(&buffer[..n]);
+
+    // Attempt to deserialize the JSON.
+    let message: Message = match serde_json::from_str(&buffer) {
+        Ok(m) => m,
+        Err(e) => {
+            eprintln!("Failed to deserialize arguments: {}", e);
+            return;
+        },
+    };
+
+    handle_message(message)
 }
 
 #[tokio::main]
