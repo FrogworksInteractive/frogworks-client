@@ -1,0 +1,57 @@
+CLI commands to implement:
+ - [X] Ping
+ - [X] Request Email Verification
+ - [X] Check Email Verification
+ - [X] Register
+ - [X] Login
+ - [X] Get User
+ - [X] Authenticate Session
+ - [X] Delete Session
+ - [X] Delete Specific Session
+ - [ ] Create Application
+ - [ ] Get Application
+ - [ ] Get Application Versions
+ - [ ] Get Specific Application Version
+ - [ ] Get Fine-Tuned Application Version
+ - [ ] Download Application Version
+ - [ ] Update Application Version
+ - [ ] Create Application Version
+ - [ ] Create Sale
+ - [ ] Get Active Sale
+ - [ ] Get All Sales
+ - [ ] Delete Sale
+ - [ ] Get User Transactions
+ - [ ] Get Transaction
+ - [ ] Get Purchase
+ - [ ] Get Deposit
+ - [ ] Get Application Key
+ - [ ] Get User Application Keys
+ - [ ] Purchase Application
+ - [ ] Purchase IAP
+ - [ ] Get IAP Records
+ - [ ] Get Session
+ - [ ] Send Friend Request
+ - [ ] Delete Friend Request
+ - [ ] Get Incoming Friend Requests
+ - [ ] Get Outgoing Friend Requests
+ - [ ] Accept Friend Request
+ - [ ] Get Friends
+ - [ ] Remove Friend
+ - [ ] Send Invite
+ - [ ] Get Invites
+ - [ ] Get Invite
+ - [ ] Delete Invite
+ - [ ] Create Photo
+ - [ ] Get Photo
+ - [ ] Create IAP
+ - [ ] Get IAP
+ - [ ] Get IAPs
+ - [ ] Upload Cloud Data
+ - [ ] Get Cloud Data
+ - [ ] Delete Cloud Data
+ - [ ] Delete Application Cloud Data
+ - [ ] Update Profile Photo
+ - [ ] Get User Sessions
+ - [ ] Get IAP Record
+ - [ ] Acknowledge IAP Record
+ - [ ]
