@@ -202,6 +202,498 @@ impl CommandHandler for CreateApplication {
     }
 }
 
+struct GetApplication {}
+
+impl CommandHandler for GetApplication {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        // Attempt to get the application.
+        let application = api_service.get_application(application_id).unwrap();
+        
+        to_value(application).unwrap()
+    }
+}
+
+struct GetApplicationVersions {}
+
+impl CommandHandler for GetApplicationVersions {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameters.
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        let platform: String = matches.get_one::<String>("platform")
+            .unwrap()
+            .to_owned();
+        
+        // Attempt to get the application versions for the specified platform.
+        let application_versions = api_service
+            .get_application_versions(application_id, platform)
+            .unwrap();
+        
+        to_value(application_versions).unwrap()
+    }
+}
+
+struct GetSpecificApplicationVersion {}
+
+impl CommandHandler for GetSpecificApplicationVersion {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let version_id: i32 = matches.get_one::<i32>("version-id")
+            .unwrap()
+            .to_owned();
+        
+        let application_version = api_service.get_application_version(version_id)
+            .unwrap();
+        
+        to_value(application_version).unwrap()
+    }
+}
+
+struct GetApplicationVersionFor {}
+
+impl CommandHandler for GetApplicationVersionFor {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameters.
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        // TODO: Deal with this.
+        // let platform: String = matches.get_one::<String>("platform")
+        //     .unwrap()
+        //     .to_owned();
+        
+        let application_version = 
+            api_service.get_application_version(application_id)
+                .unwrap();
+        
+        to_value(application_version).unwrap()
+    }
+}
+
+struct GetFineTunedApplicationVersion {}
+
+impl CommandHandler for GetFineTunedApplicationVersion {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameters.
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        let version_name: String = matches.get_one::<String>("version-name")
+            .unwrap()
+            .to_owned();
+        
+        let platform: String = matches.get_one::<String>("platform")
+            .unwrap()
+            .to_owned();
+        
+        let version = api_service.get_application_version_for(
+            application_id,
+            version_name,
+            platform
+        ).unwrap();
+        
+        to_value(version).unwrap()
+    }
+}
+
+struct UpdateApplicationVersion {}
+
+impl CommandHandler for UpdateApplicationVersion {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameters.
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+
+        let version_name: String = matches.get_one::<String>("version-name")
+            .unwrap()
+            .to_owned();
+        
+        // Update the application version.
+        let response = 
+            api_service.update_application_version(application_id, version_name);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct CreateApplicationVersion {}
+
+impl CommandHandler for CreateApplicationVersion {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameters.
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        let name: String = matches.get_one::<String>("name")
+            .unwrap()
+            .to_owned();
+        let platform: String = matches.get_one::<String>("platform")
+            .unwrap()
+            .to_owned();
+        let release_date: String = matches.get_one::<String>("release-date")
+            .unwrap()
+            .to_owned();
+        let filename: String = matches.get_one::<String>("filename")
+            .unwrap()
+            .to_owned();
+        let executable: String = matches.get_one::<String>("executable")
+            .unwrap()
+            .to_owned();
+        let filepath: String = matches.get_one::<String>("file")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.create_application_version(
+            application_id,
+            name,
+            platform,
+            release_date,
+            filename,
+            executable,
+            filepath
+        );
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct CreateSale {}
+
+impl CommandHandler for CreateSale {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameters. 
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        let title: String = matches.get_one::<String>("title")
+            .unwrap()
+            .to_owned();
+        let description: String = matches.get_one::<String>("description")
+            .unwrap()
+            .to_owned();
+        let price: f32 = matches.get_one::<f32>("price")
+            .unwrap()
+            .to_owned();
+        let start_date: String = matches.get_one::<String>("start-date")
+            .unwrap()
+            .to_owned();
+        let end_date: String = matches.get_one::<String>("end-date")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.create_sale(
+            application_id,
+            title,
+            description,
+            price,
+            start_date,
+            end_date
+        );
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct GetActiveSale {}
+
+impl CommandHandler for GetActiveSale {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        let active_sale = api_service.get_active_sale(application_id).unwrap();
+        
+        to_value(active_sale).unwrap()
+    }
+}
+
+struct GetAllSales {}
+
+impl CommandHandler for GetAllSales {
+    fn handle_command(api_service: ApiService, _matches: &ArgMatches) -> Value {
+        let sales = api_service.get_all_sales().unwrap();
+        
+        to_value(sales).unwrap()
+    }
+}
+
+struct DeleteSale {}
+
+impl CommandHandler for DeleteSale {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let sale_id: i32 = matches.get_one::<i32>("sale-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.delete_sale(sale_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct GetUserTransactions {}
+
+impl CommandHandler for GetUserTransactions {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_user_transactions(user_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetTransaction {}
+
+impl CommandHandler for GetTransaction {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let transaction_id: i32 = matches.get_one::<i32>("transaction-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_transaction(transaction_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetPurchase {}
+
+impl CommandHandler for GetPurchase {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let purchase_id: i32 = matches.get_one::<i32>("purchase-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_purchase(purchase_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetDeposit {}
+
+impl CommandHandler for GetDeposit {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let deposit_id: i32 = matches.get_one::<i32>("deposit-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_deposit(deposit_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetApplicationKey {}
+
+impl CommandHandler for GetApplicationKey {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let key: String = matches.get_one::<String>("key")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_application_key(key).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetUserApplicationKeys {}
+
+impl CommandHandler for GetUserApplicationKeys {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_user_application_keys(user_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct PurchaseApplication {}
+
+impl CommandHandler for PurchaseApplication {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.purchase_application(application_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct PurchaseIap {}
+
+impl CommandHandler for PurchaseIap {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let iap_id: i32 = matches.get_one::<i32>("iap-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.purchase_iap(iap_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct GetIapRecords {}
+
+impl CommandHandler for GetIapRecords {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameters.
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        let only_unacknowledged: bool = matches.contains_id("only-unacknowledged");
+        
+        let response = api_service.get_iap_records(
+            user_id,
+            application_id,
+            only_unacknowledged
+        ).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetSession {}
+
+impl CommandHandler for GetSession {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let session_id: String = matches.get_one::<String>("session-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_session(session_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct SendFriendRequest {}
+
+impl CommandHandler for SendFriendRequest {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.send_friend_request(user_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct DeleteFriendRequest {}
+
+impl CommandHandler for DeleteFriendRequest {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let request_id: i32 = matches.get_one::<i32>("request-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.delete_friend_request(request_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct GetIncomingFriendRequests {}
+
+impl CommandHandler for GetIncomingFriendRequests {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_incoming_friend_requests(user_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetOutgoingFriendRequests {}
+
+impl CommandHandler for GetOutgoingFriendRequests {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_outgoing_friend_requests(user_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct AcceptFriendRequest {}
+
+impl CommandHandler for AcceptFriendRequest {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        // Get the parameter.
+        let request_id: i32 = matches.get_one::<i32>("request-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.accept_friend_request(request_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct JsonResponse<T> {
     time: f64,
@@ -367,6 +859,16 @@ fn main() {
                                 .value_parser(value_parser!(i32))
                         )
                 )
+                .subcommand(
+                    Command::new("get")
+                        .long_flag("get")
+                        .arg(
+                            Arg::new("session-id")
+                                .long("session-id")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                )
         )
         .subcommand(
             Command::new("user")
@@ -386,6 +888,38 @@ fn main() {
                                 .long("identifier-type")
                                 .value_parser(value_parser!(String))
                                 .default_value("identifier")
+                        )
+                )
+                .subcommand(
+                    Command::new("properties")
+                        .long_flag("properties")
+                        .subcommand_required(true)
+                        .subcommand(
+                            Command::new("get")
+                                .long_flag("get")
+                                .subcommand_required(true)
+                                .subcommand(
+                                    Command::new("iap-records")
+                                        .long_flag("iap-records")
+                                        .arg(
+                                            Arg::new("user-id")
+                                                .long("user-id")
+                                                .value_parser(value_parser!(i32))
+                                                .required(true)
+                                        )
+                                        .arg(
+                                            Arg::new("application-id")
+                                                .long("application-id")
+                                                .value_parser(value_parser!(i32))
+                                                .required(true)
+                                        )
+                                        .arg(
+                                            Arg::new("only-unacknowledged")
+                                                .long("only-unacknowledged")
+                                                .required(false)
+                                                .num_args(0)
+                                        )
+                                )
                         )
                 )
         )
@@ -457,6 +991,359 @@ fn main() {
                                 .required(true)
                         )
                 )
+                .subcommand(
+                    Command::new("get")
+                        .long_flag("get")
+                        .arg(
+                            Arg::new("application-id")
+                                .long("application-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("version")
+                        .long_flag("version")
+                        .subcommand_required(true)
+                        .subcommand(
+                            Command::new("get-for")
+                                .long_flag("get-for")
+                                .arg(
+                                    Arg::new("application-id")
+                                        .long("application-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("platform")
+                                        .long("platform")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("get")
+                                .long_flag("get")
+                                .arg(
+                                    Arg::new("version-id")
+                                        .long("version-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("get-fine-tuned")
+                                .long_flag("get-fine-tuned")
+                                .arg(
+                                    Arg::new("application-id")
+                                        .long("application-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("version-name")
+                                        .long("version-name")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("platform")
+                                        .long("platform")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("get-list")
+                                .long_flag("get-list")
+                                .arg(
+                                    Arg::new("application-id")
+                                        .long("application-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("update")
+                                .long_flag("update")
+                                .arg(
+                                    Arg::new("application-id")
+                                        .long("application-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("version-name")
+                                        .long("version-name")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("create")
+                                .long_flag("create")
+                                .arg(
+                                    Arg::new("application-id")
+                                        .long("application-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("name")
+                                        .long("name")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("platform")
+                                        .long("platform")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("release-date")
+                                        .long("release-date")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("filename")
+                                        .long("filename")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("executable")
+                                        .long("executable")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("file")
+                                        .long("file")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                        )
+                )
+                .subcommand(
+                    Command::new("sale")
+                        .long_flag("sale")
+                        .subcommand_required(true)
+                        .subcommand(
+                            Command::new("create")
+                                .long_flag("create")
+                                .arg(
+                                    Arg::new("application-id")
+                                        .long("application-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("title")
+                                        .long("title")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("description")
+                                        .long("description")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("price")
+                                        .long("price")
+                                        .value_parser(value_parser!(f32))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("start-date")
+                                        .long("start-date")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("end-date")
+                                        .long("end-date")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("get-active")
+                                .long_flag("get-active")
+                                .arg(
+                                    Arg::new("application-id")
+                                        .long("application-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("get-all")
+                                .long_flag("get-all")
+                        )
+                        .subcommand(
+                            Command::new("delete")
+                                .long_flag("delete")
+                                .arg(
+                                    Arg::new("sale-id")
+                                        .long("sale-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                )
+                .subcommand(
+                    Command::new("key")
+                        .long_flag("key")
+                        .subcommand_required(true)
+                        .subcommand(
+                            Command::new("get")
+                                .long_flag("get")
+                                .arg(
+                                    Arg::new("key")
+                                        .long("key")
+                                        .value_parser(value_parser!(String))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("get-list-for")
+                                .long_flag("get-list-for")
+                                .arg(
+                                    Arg::new("user-id")
+                                        .long("user-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                )
+        )
+        .subcommand(
+            Command::new("payment")
+                .long_flag("payment")
+                .subcommand_required(true)
+                .subcommand(
+                    Command::new("get")
+                        .long_flag("get")
+                        .subcommand_required(true)
+                        .subcommand(
+                            Command::new("user-transactions")
+                                .arg(
+                                    Arg::new("user-id")
+                                        .long("user-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("transaction")
+                                .arg(
+                                    Arg::new("transaction-id")
+                                        .long("transaction-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("purchase")
+                                .arg(
+                                    Arg::new("purchase-id")
+                                        .long("purchase-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("deposit")
+                                .arg(
+                                    Arg::new("deposit-id")
+                                        .long("deposit-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                )
+                .subcommand(
+                    Command::new("buy")
+                        .long_flag("buy")
+                        .subcommand_required(true)
+                        .subcommand(
+                            Command::new("application")
+                                .long_flag("application")
+                                .arg(
+                                    Arg::new("application-id")
+                                        .long("application-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("iap")
+                                .long_flag("iap")
+                                .arg(
+                                    Arg::new("iap-id")
+                                        .long("iap-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                )
+        )
+        .subcommand(
+            Command::new("friend")
+                .long_flag("friend")
+                .subcommand_required(true)
+                .subcommand(
+                    Command::new("request")
+                        .long_flag("request")
+                        .subcommand_required(true)
+                        .subcommand(
+                            Command::new("send")
+                                .arg(
+                                    Arg::new("user-id")
+                                        .long("user-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("delete")
+                                .arg(
+                                    Arg::new("request-id")
+                                        .long("request-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("get")
+                                .long_flag("get")
+                                .subcommand_required(true)
+                                .subcommand(
+                                    Command::new("incoming")
+                                        .long_flag("incoming")
+                                        .arg(
+                                            Arg::new("user-id")
+                                                .long("user-id")
+                                                .value_parser(value_parser!(i32))
+                                                .required(true)
+                                        )
+                                )
+                                .subcommand(
+                                    Command::new("outgoing")
+                                        .long_flag("outgoing")
+                                        .arg(
+                                            Arg::new("user-id")
+                                                .long("user-id")
+                                                .value_parser(value_parser!(i32))
+                                                .required(true)
+                                        )
+                                )
+                        )
+                )
         );
     
     let matches: ArgMatches = command.get_matches();
@@ -495,6 +1382,9 @@ fn main() {
                 Some(("delete", session_matches)) => {
                     handle(|| DeleteSession::handle_command(api_service, session_matches));
                 },
+                Some(("get", session_matches)) => {
+                    handle(|| GetSession::handle_command(api_service, session_matches))
+                },
                 _ => {}
             }
         },
@@ -521,6 +1411,20 @@ fn main() {
                 Some(("get", get_matches)) => {
                     handle(|| GetUser::handle_command(api_service, get_matches));
                 },
+                Some(("properties", properties_matches)) => {
+                    match properties_matches.subcommand() {
+                        Some(("get", get_matches)) => {
+                            match get_matches.subcommand() {
+                                Some(("iap-records", matches)) => {
+                                    handle(|| GetIapRecords::handle_command(api_service,
+                                                                            matches));
+                                },
+                                _ => {}
+                            }
+                        },
+                        _ => {}
+                    }
+                },
                 _ => {}
             }
         },
@@ -528,6 +1432,132 @@ fn main() {
             match application_matches.subcommand() {
                 Some(("create", create_matches)) => {
                     handle(|| CreateApplication::handle_command(api_service, create_matches));
+                },
+                Some(("get", get_matches)) => {
+                    handle(|| GetApplication::handle_command(api_service, get_matches));
+                },
+                Some(("version", version_matches)) => {
+                    match version_matches.subcommand() { 
+                        Some(("get-for", get_matches)) => {
+                            handle(|| GetApplicationVersionFor::handle_command(api_service,
+                                                                               get_matches));
+                        },
+                        Some(("get", get_matches)) => {
+                            handle(|| GetSpecificApplicationVersion::handle_command(api_service,
+                                                                                    get_matches));
+                        }
+                        Some(("get-fine-tuned", get_matches)) => {
+                            handle(|| GetFineTunedApplicationVersion::handle_command(api_service,
+                                                                                     get_matches));
+                        },
+                        Some(("get-list", get_matches)) => {
+                            handle(|| GetApplicationVersions::handle_command(api_service, 
+                                                                             get_matches));
+                        },
+                        Some(("update", update_matches)) => {
+                            handle(|| UpdateApplicationVersion::handle_command(api_service,
+                                                                               update_matches));
+                        },
+                        Some(("create", create_matches)) => {
+                            handle(|| CreateApplicationVersion::handle_command(api_service, 
+                                                                               create_matches));
+                        },
+                        _ => {}
+                    }
+                },
+                Some(("sale", sale_matches)) => {
+                    match sale_matches.subcommand() {
+                        Some(("create", create_matches)) => {
+                            handle(|| CreateSale::handle_command(api_service, create_matches));
+                        },
+                        Some(("get-active", matches)) => {
+                            handle(|| GetActiveSale::handle_command(api_service, matches));
+                        },
+                        Some(("get-all", matches)) => {
+                            handle(|| GetAllSales::handle_command(api_service, matches));
+                        },
+                        Some(("delete", matches)) => {
+                            handle(|| DeleteSale::handle_command(api_service, matches))
+                        }
+                        _ => {}
+                    }
+                },
+                Some(("key", key_matches)) => {
+                    match key_matches.subcommand() {
+                        Some(("get", get_matches)) => {
+                            handle(|| GetApplicationKey::handle_command(api_service, get_matches));
+                        },
+                        Some(("get-list-for", matches)) => {
+                            handle(|| GetUserApplicationKeys::handle_command(api_service, matches));
+                        },
+                        _ => {}
+                    }
+                },
+                _ => {}
+            }
+        },
+        Some(("payment", payment_matches)) => {
+            match payment_matches.subcommand() {
+                Some(("get", get_matches)) => {
+                    match get_matches.subcommand() { 
+                        Some(("user-transactions", matches)) => {
+                            handle(|| GetUserTransactions::handle_command(api_service, matches));
+                        },
+                        Some(("transaction", matches)) => {
+                            handle(|| GetTransaction::handle_command(api_service, matches));
+                        },
+                        Some(("purchase", matches)) => {
+                            handle(|| GetPurchase::handle_command(api_service, matches));
+                        },
+                        Some(("deposit", matches)) => {
+                            handle(|| GetDeposit::handle_command(api_service, matches));
+                        },
+                        _ => {}
+                    }
+                },
+                Some(("buy", buy_matches)) => {
+                    match buy_matches.subcommand() {
+                        Some(("application", matches)) => {
+                            handle(|| PurchaseApplication::handle_command(api_service, matches));
+                        },
+                        Some(("iap", matches)) => {
+                            handle(|| PurchaseApplication::handle_command(api_service, matches));
+                        },
+                        _ => {}
+                    }
+                },
+                _ => {}
+            }
+        },
+        Some(("friend", friend_matches)) => {
+            match friend_matches.subcommand() { 
+                Some(("request", request_matches)) => {
+                    match request_matches.subcommand() {
+                        Some(("send", matches)) => {
+                            handle(|| SendFriendRequest::handle_command(api_service, matches));
+                        },
+                        Some(("delete", matches)) => {
+                            handle(|| DeleteFriendRequest::handle_command(api_service, matches));
+                        },
+                        Some(("get", get_matches)) => {
+                            match get_matches.subcommand() {
+                                Some(("incoming", incoming_matches)) => {
+                                    handle(|| GetIncomingFriendRequests::handle_command(
+                                        api_service, incoming_matches));
+                                },
+                                Some(("outgoing", outgoing_matching)) => {
+                                    handle(|| GetOutgoingFriendRequests::handle_command(
+                                        api_service, outgoing_matching))
+                                },
+                                _ => {}
+                            }
+                        },
+                        Some(("accept", accept_matches)) => {
+                            handle(|| AcceptFriendRequest::handle_command(api_service, 
+                                                                          accept_matches))
+                        },
+                        _ => {}
+                    }
                 },
                 _ => {}
             }

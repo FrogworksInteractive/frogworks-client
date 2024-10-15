@@ -9,32 +9,32 @@ CLI commands to implement:
  - [X] Delete Session
  - [X] Delete Specific Session
  - [X] Create Application
- - [ ] Get Application
- - [ ] Get Application Versions
- - [ ] Get Specific Application Version
- - [ ] Get Fine-Tuned Application Version
- - [ ] Download Application Version
- - [ ] Update Application Version
- - [ ] Create Application Version
- - [ ] Create Sale
- - [ ] Get Active Sale
- - [ ] Get All Sales
- - [ ] Delete Sale
- - [ ] Get User Transactions
- - [ ] Get Transaction
- - [ ] Get Purchase
- - [ ] Get Deposit
- - [ ] Get Application Key
- - [ ] Get User Application Keys
- - [ ] Purchase Application
- - [ ] Purchase IAP
- - [ ] Get IAP Records
- - [ ] Get Session
- - [ ] Send Friend Request
- - [ ] Delete Friend Request
- - [ ] Get Incoming Friend Requests
- - [ ] Get Outgoing Friend Requests
- - [ ] Accept Friend Request
+ - [X] Get Application
+ - [X] Get Application Versions
+ - [X] Get Specific Application Version
+ - [X] Get Fine-Tuned Application Version
+ - [ ] Download Application Version (will be part of the daemon)
+ - [X] Update Application Version
+ - [X] Create Application Version
+ - [X] Create Sale
+ - [X] Get Active Sale
+ - [X] Get All Sales
+ - [X] Delete Sale
+ - [X] Get User Transactions
+ - [X] Get Transaction
+ - [X] Get Purchase
+ - [X] Get Deposit
+ - [X] Get Application Key
+ - [X] Get User Application Keys
+ - [X] Purchase Application
+ - [X] Purchase IAP
+ - [X] Get IAP Records
+ - [X] Get Session
+ - [X] Send Friend Request
+ - [X] Delete Friend Request
+ - [X] Get Incoming Friend Requests
+ - [X] Get Outgoing Friend Requests
+ - [X] Accept Friend Request
  - [ ] Get Friends
  - [ ] Remove Friend
  - [ ] Send Invite
