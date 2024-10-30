@@ -694,6 +694,36 @@ impl CommandHandler for AcceptFriendRequest {
     }
 }
 
+struct GetFriends {}
+
+impl CommandHandler for GetFriends {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_friends(user_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct RemoveFriend {}
+
+impl CommandHandler for RemoveFriend {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.remove_friend(user_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct JsonResponse<T> {
     time: f64,
@@ -1344,6 +1374,26 @@ fn main() {
                                 )
                         )
                 )
+                .subcommand(
+                    Command::new("get-list")
+                        .long_flag("get-list")
+                        .arg(
+                            Arg::new("user-id")
+                                .long("user-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("remove")
+                        .long_flag("remove")
+                        .arg(
+                            Arg::new("user-id")
+                                .long("user-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
         );
     
     let matches: ArgMatches = command.get_matches();
@@ -1547,17 +1597,23 @@ fn main() {
                                 },
                                 Some(("outgoing", outgoing_matching)) => {
                                     handle(|| GetOutgoingFriendRequests::handle_command(
-                                        api_service, outgoing_matching))
+                                        api_service, outgoing_matching));
                                 },
                                 _ => {}
                             }
                         },
                         Some(("accept", accept_matches)) => {
                             handle(|| AcceptFriendRequest::handle_command(api_service, 
-                                                                          accept_matches))
+                                                                          accept_matches));
                         },
                         _ => {}
                     }
+                },
+                Some(("get-list", matches)) => {
+                    handle(|| GetFriends::handle_command(api_service, matches));
+                },
+                Some(("remove", matches)) => {
+                    handle(|| RemoveFriend::handle_command(api_service, matches));
                 },
                 _ => {}
             }

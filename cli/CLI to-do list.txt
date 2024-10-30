@@ -35,8 +35,8 @@ CLI commands to implement:
  - [X] Get Incoming Friend Requests
  - [X] Get Outgoing Friend Requests
  - [X] Accept Friend Request
- - [ ] Get Friends
- - [ ] Remove Friend
+ - [X] Get Friends
+ - [X] Remove Friend
  - [ ] Send Invite
  - [ ] Get Invites
  - [ ] Get Invite
