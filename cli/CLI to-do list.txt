@@ -37,10 +37,10 @@ CLI commands to implement:
  - [X] Accept Friend Request
  - [X] Get Friends
  - [X] Remove Friend
- - [ ] Send Invite
- - [ ] Get Invites
- - [ ] Get Invite
- - [ ] Delete Invite
+ - [X] Send Invite
+ - [X] Get Invites
+ - [X] Get Invite
+ - [X] Delete Invite
  - [ ] Create Photo
  - [ ] Get Photo
  - [ ] Create IAP

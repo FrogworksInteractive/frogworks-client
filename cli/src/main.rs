@@ -724,6 +724,72 @@ impl CommandHandler for RemoveFriend {
     }
 }
 
+struct SendInvite {}
+
+impl CommandHandler for SendInvite {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        let details: String = matches.get_one::<String>("details")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.send_invite(user_id, application_id, details);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct GetInvites {}
+
+impl CommandHandler for GetInvites {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_invites(user_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetInvite {}
+
+impl CommandHandler for GetInvite {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let invite_id: i32 = matches.get_one::<i32>("invite-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_invites(invite_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct DeleteInvite {}
+
+impl CommandHandler for DeleteInvite {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let invite_id: i32 = matches.get_one::<i32>("invite-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.delete_invite(invite_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct JsonResponse<T> {
     time: f64,
@@ -1394,6 +1460,63 @@ fn main() {
                                 .required(true)
                         )
                 )
+        )
+        .subcommand(
+            Command::new("invite")
+                .long_flag("invite")
+                .subcommand_required(true)
+                .subcommand(
+                    Command::new("send")
+                        .long_flag("send")
+                        .arg(
+                            Arg::new("user-id")
+                                .long("user-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("application-id")
+                                .long("application-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("details")
+                                .long("details")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("get-list")
+                        .long_flag("get-list")
+                        .arg(
+                            Arg::new("user-id")
+                                .long("user-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("get")
+                        .long_flag("get")
+                        .arg(
+                            Arg::new("invite-id")
+                                .long("invite-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("delete")
+                        .long_flag("delete")
+                        .arg(
+                            Arg::new("invite-id")
+                                .long("invite-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
         );
     
     let matches: ArgMatches = command.get_matches();
@@ -1614,6 +1737,23 @@ fn main() {
                 },
                 Some(("remove", matches)) => {
                     handle(|| RemoveFriend::handle_command(api_service, matches));
+                },
+                _ => {}
+            }
+        },
+        Some(("invite", invite_matches)) => {
+            match invite_matches.subcommand() {
+                Some(("send", send_matches)) => {
+                    handle(|| SendInvite::handle_command(api_service, send_matches));
+                },
+                Some(("get-list", matches)) => {
+                    handle(|| GetInvites::handle_command(api_service, matches));
+                },
+                Some(("get", matches)) => {
+                    handle(|| GetInvite::handle_command(api_service, matches));
+                },
+                Some(("delete", matches)) => {
+                    handle(|| DeleteInvite::handle_command(api_service, matches));
                 },
                 _ => {}
             }
