@@ -790,6 +790,232 @@ impl CommandHandler for DeleteInvite {
     }
 }
 
+struct CreatePhoto {}
+
+impl CommandHandler for CreatePhoto {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let subfolder: String = matches.get_one::<String>("subfolder")
+            .unwrap()
+            .to_owned();
+        let filepath: String = matches.get_one::<String>("filepath")
+            .unwrap()
+            .to_owned();
+        
+        let result = api_service.create_photo(subfolder, filepath);
+        
+        json!({
+            "success": result.is_ok()
+        })
+    }
+}
+
+struct GetPhoto {}
+
+impl CommandHandler for GetPhoto {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let id: i32 = matches.get_one::<i32>("id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_photo(id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct CreateIap {}
+
+impl CommandHandler for CreateIap {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        let title: String = matches.get_one::<String>("title")
+            .unwrap()
+            .to_owned();
+        let description: String = matches.get_one::<String>("description")
+            .unwrap()
+            .to_owned();
+        let price: f32 = matches.get_one::<f32>("price")
+            .unwrap()
+            .to_owned();
+        let data: String = matches.get_one::<String>("data")
+            .unwrap()
+            .to_owned();
+        
+        let result = api_service.create_iap(application_id, title, description, price, data);
+        
+        json!({
+            "success": result.is_ok()
+        })
+    }
+}
+
+struct GetIap {}
+
+impl CommandHandler for GetIap {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let id: i32 = matches.get_one::<i32>("id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_iap(id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetIaps {}
+
+impl CommandHandler for GetIaps {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_iaps(application_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct UploadCloudData {}
+
+impl CommandHandler for UploadCloudData {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        let data: String = matches.get_one::<String>("data")
+            .unwrap()
+            .to_owned();
+        
+        let result = api_service.upload_cloud_data(user_id, application_id, data);
+        
+        json!({
+            "success": result.is_ok()
+        })
+    }
+}
+
+struct GetCloudData {}
+
+impl CommandHandler for GetCloudData {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_cloud_data(user_id, application_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct DeleteCloudData {}
+
+impl CommandHandler for DeleteCloudData {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.delete_cloud_data(user_id, application_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct DeleteApplicationCloudData {}
+
+impl CommandHandler for DeleteApplicationCloudData {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let application_id: i32 = matches.get_one::<i32>("application-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.delete_application_cloud_data(application_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct UpdateProfilePhoto {}
+
+impl CommandHandler for UpdateProfilePhoto {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        let photo_id: i32 = matches.get_one::<i32>("photo-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.update_profile_photo(user_id, photo_id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
+struct GetUserSessions {}
+
+impl CommandHandler for GetUserSessions {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let user_id: i32 = matches.get_one::<i32>("user-id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_user_sessions(user_id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct GetIapRecord {}
+
+impl CommandHandler for GetIapRecord {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let id: i32 = matches.get_one::<i32>("id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.get_iap_record(id).unwrap();
+        
+        to_value(response).unwrap()
+    }
+}
+
+struct AcknowledgeIapRecord {}
+
+impl CommandHandler for AcknowledgeIapRecord {
+    fn handle_command(api_service: ApiService, matches: &ArgMatches) -> Value {
+        let id: i32 = matches.get_one::<i32>("id")
+            .unwrap()
+            .to_owned();
+        
+        let response = api_service.acknowledge_iap_record(id);
+        
+        json!({
+            "success": response.is_ok()
+        })
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct JsonResponse<T> {
     time: f64,
@@ -1015,6 +1241,32 @@ fn main() {
                                                 .required(false)
                                                 .num_args(0)
                                         )
+                                )
+                                .subcommand(
+                                    Command::new("sessions")
+                                        .long_flag("sessions")
+                                        .arg(
+                                            Arg::new("user-id")
+                                                .long("user-id")
+                                                .value_parser(value_parser!(i32))
+                                                .required(true)
+                                        )
+                                )
+                        )
+                        .subcommand(
+                            Command::new("update-profile-photo")
+                                .long_flag("update-profile-photo")
+                                .arg(
+                                    Arg::new("user-id")
+                                        .long("user-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                                .arg(
+                                    Arg::new("photo-id")
+                                        .long("photo-id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
                                 )
                         )
                 )
@@ -1517,6 +1769,190 @@ fn main() {
                                 .required(true)
                         )
                 )
+        )
+        .subcommand(
+            Command::new("photo")
+                .long_flag("photo")
+                .subcommand_required(true)
+                .subcommand(
+                    Command::new("create")
+                        .long_flag("create")
+                        .arg(
+                            Arg::new("subfolder")
+                                .long("subfolder")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("filepath")
+                                .long("filepath")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("get")
+                        .long_flag("get")
+                        .arg(
+                            Arg::new("id")
+                                .long("id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+        )
+        .subcommand(
+            Command::new("iap")
+                .long_flag("iap")
+                .subcommand_required(true)
+                .subcommand(
+                    Command::new("create")
+                        .long_flag("create")
+                        .arg(
+                            Arg::new("application-id")
+                                .long("application-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("title")
+                                .long("title")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("description")
+                                .long("description")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("price")
+                                .long("price")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("data")
+                                .long("data")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("get")
+                        .long_flag("get")
+                        .arg(
+                            Arg::new("id")
+                                .long("id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("get-for")
+                        .long_flag("get-for")
+                        .arg(
+                            Arg::new("application-id")
+                                .long("application-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("record")
+                        .long_flag("record")
+                        .subcommand_required(true)
+                        .subcommand(
+                            Command::new("get")
+                                .long_flag("get")
+                                .arg(
+                                    Arg::new("id")
+                                        .long("id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                        .subcommand(
+                            Command::new("acknowledge")
+                                .long_flag("acknowledge")
+                                .arg(
+                                    Arg::new("id")
+                                        .long("id")
+                                        .value_parser(value_parser!(i32))
+                                        .required(true)
+                                )
+                        )
+                )
+        )
+        .subcommand(
+            Command::new("cloud-data")
+                .long_flag("cloud-data")
+                .subcommand_required(true)
+                .subcommand(
+                    Command::new("upload")
+                        .long_flag("upload")
+                        .arg(
+                            Arg::new("user-id")
+                                .long("user-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("application-id")
+                                .long("application-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("data")
+                                .long("data")
+                                .value_parser(value_parser!(String))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("get")
+                        .long_flag("get")
+                        .arg(
+                            Arg::new("user-id")
+                                .long("user-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("application-id")
+                                .long("application-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("delete")
+                        .long_flag("delete")
+                        .arg(
+                            Arg::new("user-id")
+                                .long("user-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                        .arg(
+                            Arg::new("application-id")
+                                .long("application-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
+                .subcommand(
+                    Command::new("delete-for")
+                        .long_flag("delete-for")
+                        .arg(
+                            Arg::new("application-id")
+                                .long("application-id")
+                                .value_parser(value_parser!(i32))
+                                .required(true)
+                        )
+                )
         );
     
     let matches: ArgMatches = command.get_matches();
@@ -1592,8 +2028,15 @@ fn main() {
                                     handle(|| GetIapRecords::handle_command(api_service,
                                                                             matches));
                                 },
+                                Some(("sessions", matches)) => {
+                                    handle(|| GetUserSessions::handle_command(api_service, 
+                                                                              matches));
+                                },
                                 _ => {}
                             }
+                        },
+                        Some(("update-profile-photo", matches)) => {
+                            handle(|| UpdateProfilePhoto::handle_command(api_service, matches));
                         },
                         _ => {}
                     }
@@ -1755,6 +2198,59 @@ fn main() {
                 Some(("delete", matches)) => {
                     handle(|| DeleteInvite::handle_command(api_service, matches));
                 },
+                _ => {}
+            }
+        },
+        Some(("photo", photo_matches)) => {
+            match photo_matches.subcommand() {
+                Some(("create", create_matches)) => {
+                    handle(|| CreatePhoto::handle_command(api_service, create_matches));
+                },
+                Some(("get", get_matches)) => {
+                    handle(|| GetPhoto::handle_command(api_service, get_matches));
+                },
+                _ => {}
+            }
+        },
+        Some(("iap", iap_matches)) => {
+            match iap_matches.subcommand() {
+                Some(("create", create_matches)) => {
+                    handle(|| CreateIap::handle_command(api_service, create_matches));
+                },
+                Some(("get", get_matches)) => {
+                    handle(|| GetIap::handle_command(api_service, get_matches));
+                },
+                Some(("get-for", matches)) => {
+                    handle(|| GetIaps::handle_command(api_service, matches));
+                },
+                Some(("record", record_matches)) => {
+                    match record_matches.subcommand() {
+                        Some(("get", matches)) => {
+                            handle(|| GetIapRecord::handle_command(api_service, matches));
+                        },
+                        Some(("acknowledge", matches)) => {
+                            handle(|| AcknowledgeIapRecord::handle_command(api_service, matches));
+                        },
+                        _ => {}
+                    }
+                },
+                _ => {}
+            }
+        },
+        Some(("cloud-data", data_matches)) => {
+            match data_matches.subcommand() {
+                Some(("upload", upload_matches)) => {
+                    handle(|| UploadCloudData::handle_command(api_service, upload_matches));
+                },
+                Some(("get", get_matches)) => {
+                    handle(|| GetCloudData::handle_command(api_service, get_matches));
+                },
+                Some(("delete", delete_matches)) => {
+                    handle(|| DeleteCloudData::handle_command(api_service, delete_matches));
+                },
+                Some(("delete-for", matches)) => {
+                    handle(|| DeleteApplicationCloudData::handle_command(api_service, matches));
+                }
                 _ => {}
             }
         },

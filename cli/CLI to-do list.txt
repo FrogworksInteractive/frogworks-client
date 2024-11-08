@@ -41,17 +41,16 @@ CLI commands to implement:
  - [X] Get Invites
  - [X] Get Invite
  - [X] Delete Invite
- - [ ] Create Photo
- - [ ] Get Photo
- - [ ] Create IAP
- - [ ] Get IAP
- - [ ] Get IAPs
- - [ ] Upload Cloud Data
- - [ ] Get Cloud Data
- - [ ] Delete Cloud Data
- - [ ] Delete Application Cloud Data
- - [ ] Update Profile Photo
- - [ ] Get User Sessions
- - [ ] Get IAP Record
- - [ ] Acknowledge IAP Record
- - [ ]
+ - [X] Create Photo
+ - [X] Get Photo
+ - [X] Create IAP
+ - [X] Get IAP
+ - [X] Get IAPs
+ - [X] Upload Cloud Data
+ - [X] Get Cloud Data
+ - [X] Delete Cloud Data
+ - [X] Delete Application Cloud Data
+ - [X] Update Profile Photo
+ - [X] Get User Sessions
+ - [X] Get IAP Record
+ - [X] Acknowledge IAP Record
